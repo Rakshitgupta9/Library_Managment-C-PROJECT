@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <time.h>
-#include<dos.h>
 #include <string.h>
 #define MAX_YR  2050
 #define MIN_YR  1950
