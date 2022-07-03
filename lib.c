@@ -3,14 +3,12 @@
 #include <string.h>
 #define MAX_YR  2050
 #define MIN_YR  1950
-#define MAX_SIZE_USER_NAME 30
+#define MAX_SIZE_USER_NAME 20
 #define MAX_SIZE_PASSWORD  20
 #define FILE_NAME  "A7 Lib.bin"
-// Macro related to the books info
 #define MAX_BOOK_NAME   50
 #define MAX_AUTHOR_NAME 50
 #define MAX_STUDENT_NAME 50
-#define MAX_STUDENT_ADDRESS 300
 #define FILE_HEADER_SIZE  sizeof(sFileHeader)
 //structure to store date
 typedef struct
@@ -28,25 +26,14 @@ typedef struct// to call in program
 {
     int books_id; // declare the integer data type
     char bookName[MAX_BOOK_NAME];// declare the character data type
-    char authorName[MAX_AUTHOR_NAME];// declare the charecter data type
+    char authorName[MAX_AUTHOR_NAME];// declare the character data type
     char studentName[MAX_STUDENT_NAME];// declare the character data type
-    char studentAddr[MAX_STUDENT_ADDRESS];// declare the character data type
     Date bookIssueDate;// declare the integer data type
 } s_BooksInfo;
 void printMessageCenter(char* message)
 {
-    int len =0;
-    int pos = 0;
-    //calculate how many space need to print
-    len = (78 - strlen(message))/2;
-    printf("\t\t\t");
-    for(pos =0 ; pos < len ; pos++)
-    {
-        //print space
-        printf(" ");
-    }
     //print message
-    printf("%s",message);
+    printf("\t\t\t\t\t\t\t%s",message);
 }
 void headMessage(char *message)
 {
@@ -60,22 +47,7 @@ void headMessage(char *message)
     printMessageCenter(message);
     printf("\n\t\t\t----------------------------------------------------------------------------");
 }
-void welcomeMessage()
-{
-    headMessage("A7 PROJECT");
-    printf("\n\n\n\n\n");
-    printf("\n\t\t\t  **-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**\n");
-    printf("\n\t\t\t        =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-    printf("\n\t\t\t        =                 WELCOME                   =");
-    printf("\n\t\t\t        =                   TO                      =");
-    printf("\n\t\t\t        =                 LIBRARY                   =");
-    printf("\n\t\t\t        =               MANAGEMENT                  =");
-    printf("\n\t\t\t        =                 SYSTEM                    =");
-    printf("\n\t\t\t        =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-    printf("\n\t\t\t  **-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**\n");
-    printf("\n\n\n\t\t\t Enter any key to continue.....");
-    getch();
-}
+
 int isNameValid(char *name)
 {
     int validName = 1;
@@ -96,16 +68,13 @@ int isNameValid(char *name)
 //Function returns 1 if leap year
 int  IsLeapYear(int year)
 {
-    return (((year % 4 == 0) &&
-             (year % 100 != 0)) ||
-            (year % 400 == 0));
+    return (year % 4 == 0);
 }
 // returns 1 if given date is valid.
 int isValidDate(Date *validDate)
 {
     //check range of year,month and day
-    if (validDate->yyyy > MAX_YR ||
-            validDate->yyyy < MIN_YR)
+    if (validDate->yyyy > MAX_YR || validDate->yyyy < MIN_YR)
         return 0;
     if (validDate->mm < 1 || validDate->mm > 12)
         return 0;
@@ -143,7 +112,7 @@ void addBookInDataBase()
     printf("\n\t\t\t---------------------------------------------------------------------------\n");
     printf("\n\t\t\tBook ID NO  = ");
     fflush(stdin);
-    scanf("%u",&addBookInfoInDataBase.books_id);
+    scanf("%d",&addBookInfoInDataBase.books_id);
     do
     {
         printf("\n\t\t\tBook Name  = ");
@@ -184,7 +153,8 @@ void addBookInDataBase()
     {
         //get date year,month and day from user
         printf("\n\t\t\tEnter date in format (day/month/year): ");
-        scanf("%d/%d/%d",&addBookInfoInDataBase.bookIssueDate.dd,&addBookInfoInDataBase.bookIssueDate.mm,&addBookInfoInDataBase.bookIssueDate.yyyy);
+        scanf("%d/%d/%d",&addBookInfoInDataBase.bookIssueDate.dd,&addBookInfoInDataBase.bookIssueDate.mm,
+              &addBookInfoInDataBase.bookIssueDate.yyyy);
         //check date validity
         status = isValidDate(&addBookInfoInDataBase.bookIssueDate);
         if (!status)
@@ -213,7 +183,7 @@ void searchBooks()
     headMessage("SEARCH BOOKS");
     //put the control on books detail
     if (fseek(fp,FILE_HEADER_SIZE,SEEK_SET) != 0)
-    {
+{
         fclose(fp);
         printf("\n\t\t\tFacing issue while reading file\n");
         exit(1);
@@ -231,29 +201,28 @@ void searchBooks()
     }
     if(found)
     {
-        printf("\n\t\t\tBook id = %u\n",addBookInfoInDataBase.books_id);
+        printf("\n\t\t\tBook id = %d\n",addBookInfoInDataBase.books_id);
         printf("\t\t\tBook name = %s",addBookInfoInDataBase.bookName);
         printf("\t\t\tBook authorName = %s",addBookInfoInDataBase.authorName);
+        printf("\t\t\tStudent Name = %s",addBookInfoInDataBase.studentName);
         printf("\t\t\tBook issue date(day/month/year) =  (%d/%d/%d)",addBookInfoInDataBase.bookIssueDate.dd,
                addBookInfoInDataBase.bookIssueDate.mm, addBookInfoInDataBase.bookIssueDate.yyyy);
     }
-    else
-    {
+    else{
         printf("\n\t\t\tNo Record");
     }
     fclose(fp);
     printf("\n\n\n\t\t\tPress any key to go to main menu.....");
-    getchar();
+    getch();
 }
 // v books function
-void viewBooks()
-{
+void viewBooks(){
     int found = 0;
     char bookName[MAX_BOOK_NAME] = {0};
     s_BooksInfo addBookInfoInDataBase = {0};
     FILE *fp = NULL;
     int status = 0;
-    unsigned int countBook = 1;
+    int countBook = 1;
     headMessage("VIEW BOOKS DETAILS");
     fp = fopen(FILE_NAME,"rb");
     if(fp == NULL)
@@ -270,9 +239,10 @@ void viewBooks()
     while (fread (&addBookInfoInDataBase, sizeof(addBookInfoInDataBase), 1, fp))
     {
         printf("\n\t\t\tBook Count = %d\n\n",countBook);
-        printf("\t\t\tBook id = %u",addBookInfoInDataBase.books_id);
+        printf("\t\t\tBook id = %d",addBookInfoInDataBase.books_id);
         printf("\n\t\t\tBook name = %s",addBookInfoInDataBase.bookName);
         printf("\t\t\tBook authorName = %s",addBookInfoInDataBase.authorName);
+        printf("\t\t\tStudent Name = %s",addBookInfoInDataBase.studentName);
         printf("\t\t\tBook issue date(day/month/year) =  (%d/%d/%d)\n\n",addBookInfoInDataBase.bookIssueDate.dd,
                addBookInfoInDataBase.bookIssueDate.mm, addBookInfoInDataBase.bookIssueDate.yyyy);
         found = 1;
@@ -285,7 +255,7 @@ void viewBooks()
     }
     printf("\n\n\t\t\tPress any key to go to main menu.....");
     fflush(stdin);
-    getchar();
+    getch();
 }
 // delete function
 void deleteBooks()
@@ -328,29 +298,23 @@ void deleteBooks()
         }
     }
     (found)? printf("\n\t\t\tRecord deleted successfully....."):printf("\n\t\t\tRecord not found");
+    getch();
     fclose(fp);
     fclose(tmpFp);
     remove(FILE_NAME);
     rename("tmp.bin",FILE_NAME);
 }
-void updateCredential(void)
+void updateCredential()
 {
     sFileHeader fileHeaderInfo = {0};
     FILE *fp = NULL;
-    unsigned char userName[MAX_SIZE_USER_NAME] = {0};
-    unsigned char password[MAX_SIZE_PASSWORD] = {0};
+    char userName[MAX_SIZE_USER_NAME] = {0};
+    char password[MAX_SIZE_PASSWORD] = {0};
     headMessage("Update Credential");
     fp = fopen(FILE_NAME,"rb+");
     if(fp == NULL)
     {
         printf("File is not opened\n");
-        exit(1);
-    }
-    fread (&fileHeaderInfo,FILE_HEADER_SIZE, 1, fp);
-    if (fseek(fp,0,SEEK_SET) != 0)
-    {
-        fclose(fp);
-        printf("\n\t\t\tFacing issue while updating password\n");
         exit(1);
     }
     printf("\n\n\t\t\tNew Username:");
@@ -364,8 +328,23 @@ void updateCredential(void)
     fwrite(&fileHeaderInfo,FILE_HEADER_SIZE, 1, fp);
     fclose(fp);
     printf("\n\t\t\tYour Password has been changed successfully");
-    printf("\n\t\t\t\tLogin Again:\n\n");
-    exit(1);
+    printf("\n\t\t\t\tPress Enter to Login Again:");
+    getch();
+    login();
+}
+void about()
+{
+            headMessage("About");
+            printf("\n\n\n\t\t\t\t\t--------------------------------\n");
+            printf("\t\t\t\t\t\t   MABE BY \n\n");
+            printf("\t\t\t\t\t\tANKUSH RAINA \n");
+            printf("\t\t\t\t\t\tANSH KUMAR \n");
+            printf("\t\t\t\t\t\tRAKSHIT GUPTA \n");
+            printf("\t\t\t\t\t\tSACHIT SHARMA \n");
+            printf("\t\t\t\t\t--------------------------------\n\n\n");
+            printf("Press Enter to Return to Main Menu.......");
+            getch();
+            menu();
 }
 void menu()
 {
@@ -400,13 +379,7 @@ void menu()
             updateCredential();
             break;
         case 6:
-            printf("\n\n\n\t\t\t--------------------------------\n");
-            printf("\t\t\tMABE BY :-\n\n");
-            printf("\t\t\tANKUSH RAINA \n");
-            printf("\t\t\tANSH KUMAR \n");
-            printf("\t\t\tRAKSHIT GUPTA \n");
-            printf("\t\t\tSACHIT SHARMA \n");
-            printf("\t\t\t--------------------------------\n\n\n");
+            about();
             exit(1);
             break;
         case 7:
@@ -422,8 +395,8 @@ void menu()
 //login password
 void login()
 {
-    unsigned char userName[MAX_SIZE_USER_NAME] = {0};
-    unsigned char password[MAX_SIZE_PASSWORD] = {0};
+    char userName[MAX_SIZE_USER_NAME] = {0};
+    char password[MAX_SIZE_PASSWORD] = {0};
     int L=0,j;
     sFileHeader fileHeaderInfo = {0};
     FILE *fp = NULL;
@@ -458,7 +431,6 @@ void login()
         headMessage("Login Failed");
         printf("\t\t\t\tSorry,Unknown User.");
         getch();
-        system("cls");
     }
 }
 int isFileExists(char *path)
@@ -500,7 +472,6 @@ void init()
 int main()
 {
     init();
-    welcomeMessage();
     login();
     return 0;
 }
