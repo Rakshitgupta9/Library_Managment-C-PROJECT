@@ -337,10 +337,8 @@ void about()
             headMessage("About");
             printf("\n\n\n\t\t\t\t\t--------------------------------\n");
             printf("\t\t\t\t\t\t   MABE BY \n\n");
-            printf("\t\t\t\t\t\tANKUSH RAINA \n");
-            printf("\t\t\t\t\t\tANSH KUMAR \n");
-            printf("\t\t\t\t\t\tRAKSHIT GUPTA \n");
-            printf("\t\t\t\t\t\tSACHIT SHARMA \n");
+            printf("\t\t\t\t\t\tRAKSHIT GUPTA \n");;
+            printf("\t\t\t\t\t\t  2021a1r050 \n");;
             printf("\t\t\t\t\t--------------------------------\n\n\n");
             printf("Press Enter to Return to Main Menu.......");
             getch();
